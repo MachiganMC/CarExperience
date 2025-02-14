@@ -1,0 +1,11 @@
+services:
+  postgres:
+    container_name: pg_db
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /data
+    volumes:
+      - ./db-data:/data
