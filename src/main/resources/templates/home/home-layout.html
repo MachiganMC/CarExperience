@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org">
+<head th:fragment="head(title)" th:include="~{fragments :: head('Car Experience - ' + ${title})}"></head>
+<div th:fragment="body(categories, content)" >
+<section id="header">
+    <nav class="navbar sticky-top navbar-light" style="background-color:#e3f2fd">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                    Car Experience
+                </a>
+            </div>
+            <ul class="nav navbar-nav navbar-expand-sm">
+                <li class="active">
+                    <a class="nav-link px-2" href="#">Home</a>
+                </li>
+                <li th:each="category : ${categories}">
+                    <a class="nav-link px-2" th:text="|Nos *{category.name}|" href="#" />
+                </li>
+            </ul>
+        </div>
+    </nav>
+</section>
+<section>
+    <div class="jumbotron jumbotron-fluid text-center banner">
+        <div class="container">
+            <h1 class="display-4">Bienvenue chez Car Experience</h1>
+            <p class="lead"><em>L'alliance du luxe, de la performance et de l'émotion.</em></p>
+        </div>
+    </div>
+    <div class="py-3 px-5">
+        <div th:replace="${content}"></div>
+    </div>
+</section>
+</div>
+</html>

@@ -21,6 +21,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.OK)
     public void login(@RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest request, HttpServletResponse response) {
         this.authenticationService.authenticate(authenticationRequest, request, response);
+
     }
 
     @PostMapping("/register")

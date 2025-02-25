@@ -55,6 +55,10 @@ public class SecurityConfig {
                     logout.logoutSuccessUrl("/");
                     logout.deleteCookies(this.cookieName);
                 })
+                .formLogin(login -> {
+                    login.defaultSuccessUrl("/admin", true);
+                    login.disable();
+                })
                 .build()
                 ;
     }
