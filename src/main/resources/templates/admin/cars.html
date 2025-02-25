@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{admin/admin-layout :: head('Gérer les catégories')}"></head>
+<body th:replace="~{admin/admin-layout :: body(~{::content})}">
+<div th:fragment="content">
+    <div class="text-end m-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-car-modal">+ Ajouter une voiture</button>
+    </div>
+    <div
+            th:each="category : ${categories}"
+            th:object="${category}"
+            th:with="categorytIsDeleted = ${not notDeletedCategories.contains(category)}"
+            th:unless="${category.cars.isEmpty()}"
+    >
+        <div class="row my-2">
+            <div class="col-md">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row card-title">
+                            <div class="col-md">
+                              <h3 th:text="${category.name + (categorytIsDeleted ? ' [Supprimée]' : '')}"></h3>
+                            </div>
+                            <div class="col-md text-end">
+                                <h3>
+                                    <span th:replace="~{fragments :: toggler('#category-section-' + *{id})}"></span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" th:id="|category-section-*{id}|">
+                        <div class="row">
+                            <div th:each="car : *{cars}" class="col-md-4 d-flex" th:id="|car-section-${car.id}|">
+                                <div class="card my-2" th:object="${car}">
+                                    <div class="card-body">
+                                        <div th:replace="~{fragments :: carPicture(${car}, 'car-picture-' + *{id})}"></div>
+                                        <div th:id="|car-alert-*{id}|" class="alert alert-danger" style="display: none"></div>
+                                        <div class="form-group mb-1">
+                                            <label th:for="|car-name-*{id}|">Nom</label>
+                                            <input
+                                                    th:id="|car-name-*{id}|"
+                                                    type="text"
+                                                    class="form-control"
+                                                    th:classappend="|car-field-*{id}|"
+                                                    th:value="*{name}"
+                                                    disabled
+                                            >
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md form-group">
+                                                <label th:for="|car-horse-power-*{id}|">Puissance de chevaux</label>
+                                                <input
+                                                        th:id="|car-horse-power-*{id}|"
+                                                        type="number"
+                                                        min="0"
+                                                        class="form-control"
+                                                        th:classappend="|car-field-*{id}|"
+                                                        th:value="*{horsePower}"
+                                                        disabled
+                                                >
+                                            </div>
+                                            <div class="col-md form-group">
+                                                <label th:for="|car-engine-power-*{id}|">Poussée</label>
+                                                <input
+                                                        th:id="|car-engine-power-*{id}|"
+                                                        type="number"
+                                                        min="0"
+                                                        class="form-control"
+                                                        th:classappend="|car-field-*{id}|"
+                                                        th:value="*{enginePower}"
+                                                        disabled
+                                                >
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-1">
+                                            <label th:for="|car-category-*{id}|">Catégorie</label>
+                                            <select
+                                                    th:id="|car-category-*{id}|"
+                                                    class="form-control"
+                                                    th:classappend="|car-field-*{id}|"
+                                                    disabled
+                                            >
+                                                <option th:if="${categorytIsDeleted}" selected>---</option>
+                                                <option
+                                                        th:each="selectCategory : ${notDeletedCategories}"
+                                                        th:value="${selectCategory.id}"
+                                                        th:text="${selectCategory.name}"
+                                                        th:attr="selected=${category.id == selectCategory.id}"
+                                                ></option>
+                                            </select>
+                                        </div>
+                                        <div th:id="|car-picture-zone-*{id}|" class="my-2" style="display: none">
+                                            <div class="form-group">
+                                                <label th:for="|car-picture-*{id}|">Photo</label>
+                                                <input
+                                                        th:id="|car-picture-input-*{id}|"
+                                                        th:onchange="|onUploadPicture(*{id}, this)|"
+                                                        type="file"
+                                                        class="form-control"
+                                                        accept="image/*"
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end">
+                                        <button th:id="|car-edit-*{id}|" class="btn btn-primary" th:onclick="|startEdit(*{id})|">Modifier</button>
+                                        <button th:id="|car-picture-edit-*{id}|" class="btn btn-secondary" th:onclick="|startEditPicture(*{id})|">Modifier la photo</button>
+                                        <button th:id="|car-remove-*{id}|" th:onclick="|remove(*{id})|" class="btn btn-danger">Supprimer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-lg fade" tabindex="-1" role="dialog" id="add-car-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Ajouter une voiture</h3>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-9 m-2">
+                        <img class="car-picture" id="add-car-picture" style="display: none">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger m-2" id="add-car-alert" style="display: none"></div>
+                    <div class="form-group m-2">
+                        <label for="add-car-name">Nom de la voiture</label>
+                        <input type="text" id="add-car-name" class="form-control" placeholder="Ex: Peugeot">
+                    </div>
+                    <div class="m-2">
+                        <div class="row">
+                            <div class="col-md form-group">
+                                <label for="add-car-horse-power">Puissance de chevaux</label>
+                                <input type="number" min="0" id="add-car-horse-power" class="form-control" placeholder="Ex: 400">
+                            </div>
+                            <div class="col-md form-group">
+                                <label for="add-car-engine-power">Poussée</label>
+                                <input type="number" min="0" id="add-car-engine-power" class="form-control" placeholder="Ex: 350">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-2">
+                        <label for="add-car-category">Catégorie</label>
+                        <select id="add-car-category" class="form-control">
+                            <option
+                                    th:each="category : ${notDeletedCategories}"
+                                    th:object="${category}"
+                                    th:value="*{id}"
+                                    th:text="*{name}"
+                            ></option>
+                        </select>
+                    </div>
+                    <div class="form-group m-2">
+                        <label for="add-car-picture-edit">Photo</label>
+                        <input type="file" accept="image/*" class="form-control" id="add-car-picture-edit" onchange="previewPicture(addCarEl.picture, this)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="add-car-submit" onclick="addCar()">+ Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: toast('success-toast', 'Succès !', '')}"></div>
+    <div id="max-file-size" th:data-value="${maxFileSize.toBytes()}" th:data-string="|${maxFileSize.toMegabytes()}MB|"></div>
+</div>
+</body>
+<script th:src="@{/js/admin/cars.js}"></script>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{admin/admin-layout :: head('Dashboard')}"></head>
+<body th:replace="~{admin/admin-layout :: body(~{::content})}">
+<div th:fragment="content">
+    <div class="text-center">
+        <h3>Bienvenue sur la page de gestion de Car Experience, que voulez-vous faire ?</h3>
+        <div class="row m-3">
+            <div
+                    class="col-md-4"
+                    th:each="link : ${links}"
+                    th:object="${link}"
+            >
+                <div th:replace="~{admin/admin-layout :: action(*{name}, *{description}, @{*{link}})}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

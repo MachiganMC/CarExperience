@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{home/home-layout :: head('Accueil')}"></head>
+<body th:replace="~{home/home-layout :: body(${categories}, ~{::content})}">
+<div th:fragment="content">
+    <div class="text-center">
+        <div th:each="category : ${categories}" th:object="${category}" th:fragment="categoryLayout(category)">
+
+            <h2 class="title">
+                <span th:text="|Nos *{name}s|" />
+                <span th:replace="~{fragments :: toggler('#category-section-' + *{id})}"></span>
+            </h2>
+            <div class="row" style="margin: 0 10%" th:id="|category-section-*{id}|">
+                <div class="col-md-3 p-2 d-flex" th:each="car : *{cars}">
+                    <div th:replace="~{fragments :: car(${car})}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

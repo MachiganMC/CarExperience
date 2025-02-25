@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="~{admin/admin-layout :: head('Gérer les catégories')}"></head>
+<body th:replace="~{admin/admin-layout :: body(~{::content})}">
+<div th:fragment="content">
+    <div class="row mt-3" th:each="category : ${categories}" th:object="${category}">
+        <div class="col-md" th:id="|category-section-*{id}|">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title" th:text="*{name}" />
+                    <div class="alert alert-danger" th:id="|category-alert-*{id}|" style="display: none"></div>
+                    <div class="form-group">
+                        <label th:for="|category-name-*{id}|">Nom :</label>
+                        <input class="form-control" type="text" th:id="|category-name-*{id}|" th:value="*{name}" placeholder="Ex: Sportive" disabled>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <button th:id="|category-button-*{id}|" class="btn btn-primary" th:onclick="|startEdit(*{id})|">Modifier</button>
+                    <button class="btn btn-danger" th:onclick="|remove(*{id})|">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Ajouter une catégorie</h3>
+                    <div class="alert alert-danger" id="add-category-alert" style="display: none"></div>
+                    <div class="form-group">
+                        <label for="add-category-alert">Nom :</label>
+                        <input class="form-control" type="text" id="add-category-name">
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <button id="add-category-button" class="btn btn-primary" onclick="addCategory()">+ Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/js/admin/categories.js}"></script>
+</html>

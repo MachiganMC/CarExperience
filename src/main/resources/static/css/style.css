@@ -1,0 +1,27 @@
+.title {
+    color: #0056b3;
+}
+
+.car:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 300ms;
+}
+
+.banner {
+    background: linear-gradient(90deg, hsla(221, 45%, 73%, 1) 0%, hsla(220, 78%, 29%, 1) 100%);
+    color: #e3f2fd;
+}
+
+.text-end {
+    text-align: end;
+}
+
+.car-picture {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.toggler {
+    cursor: pointer;
+}

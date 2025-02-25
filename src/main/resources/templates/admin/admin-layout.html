@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="https://www.thymeleaf.org">
+<head th:fragment="head(title)" th:insert="~{fragments :: head('Admin Car Experience - ' + ${title})}"></head>
+<body th:fragment="body(content)">
+<div class="m-3">
+    <div class="row">
+        <div th:unless="${excludeNavBar}" class="col-md-2" style="height: 30vh">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Navigation</h3>
+                </div>
+                <div class="bg-light p-2">
+                    <a th:href="@{/}">Accueil</a>
+                </div>
+                <div class="p-2">
+                    <a th:href="@{/admin}">Accueil administration</a>
+                </div>
+                <div
+                        th:each="link, stat : ${links}"
+                        th:object="${link}"
+                        class="p-2"
+                        th:classappend="${stat.odd ? 'bg-light' : ''}"
+                >
+                    <a th:href="@{*{link}}" th:text="*{name}"></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div th:replace="${content}"></div>
+        </div>
+    </div>
+    <script th:src="@{/js/admin/main.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+</div>
+<div th:replace="~{fragments :: toast('success-toast', 'Succès', '')}"></div>
+</body>
+
+<div th:fragment="action(name, description, link)">
+    <div class="card m-1">
+        <div class="card-body">
+            <h4 th:text="${name}" class="card-title" />
+            <div th:text="${description}" class="text-secondary"></div>
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-primary" th:href="${link}">S'y rendre</a>
+        </div>
+    </div>
+</div>
+</html>
